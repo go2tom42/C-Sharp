@@ -15,24 +15,28 @@ namespace MountMe
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.AssemblyResolve += OnResolveAssembly;
-            
+
             if (args.Length == 0)
             {
                 Console.Clear();
                 Console.WriteLine();
-                Console.WriteLine("You asked for or need help");
+                Console.WriteLine("You asked for or needed help");
                 Console.WriteLine("This is a pretty simple program and there isn't much");
                 Console.WriteLine("The commands you can submit are");
                 Console.WriteLine("     -mount ISOPATH");
                 Console.WriteLine("     -unmount ISOPATH");
                 Console.WriteLine("     -lbox ISOPATH APPPATH");
                 Console.WriteLine("     -lbox ISOPATH APPPATH APPARGUMENTS");
+                Console.WriteLine("     If you use %DRIVE% or %DRIVE:% (note the colon) in APPARGUMENTS it's replaced with the drive letter of mounted ISO");
                 Console.WriteLine();
                 Console.WriteLine("     Examples:");
                 Console.WriteLine("     mountme -mount \"c:\\some folder\\file.iso\"");
                 Console.WriteLine("     mountme -unmount \"c:\\some folder\\file.iso\"");
                 Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\"");
-                Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\" \"-n -i -g\"");
+                Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\" \"-d %DRIVE:% -Fullscreen\"");
+                Console.WriteLine("                 After mounted App run like \"c:\\some folder\\file.exe\" \"-d G: -Fullscreen\"");
+                Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\" \"-d %DRIVE% -Fullscreen\"");
+                Console.WriteLine("                 After mounted App run like \"c:\\some folder\\file.exe\" \"-d G -Fullscreen\"");
                 Console.WriteLine();
                 Console.WriteLine("Press any key");
                 Console.ReadKey();
