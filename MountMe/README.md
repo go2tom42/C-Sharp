@@ -18,3 +18,5 @@ The commands you can submit are
  mountme -lbox "c:\some folder\file.iso" "c:\some folder\file.exe"
  mountme -lbox "c:\some folder\file.iso" "c:\some folder\file.exe" "-n -i -g"
 ```
+
+Compiled EXE in the [bin/Release](https://github.com/go2tom42/C-Sharp/tree/master/MountMe/bin/Release) folder if needed
