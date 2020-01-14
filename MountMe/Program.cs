@@ -12,9 +12,32 @@ namespace MountMe
     public class Program
     {
         [STAThreadAttribute]
-        public static void Main()
+        public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.AssemblyResolve += OnResolveAssembly;
+            
+            if (args.Length == 0)
+            {
+                Console.Clear();
+                Console.WriteLine();
+                Console.WriteLine("You asked for or need help");
+                Console.WriteLine("This is a pretty simple program and there isn't much");
+                Console.WriteLine("The commands you can submit are");
+                Console.WriteLine("     -mount ISOPATH");
+                Console.WriteLine("     -unmount ISOPATH");
+                Console.WriteLine("     -lbox ISOPATH APPPATH");
+                Console.WriteLine("     -lbox ISOPATH APPPATH APPARGUMENTS");
+                Console.WriteLine();
+                Console.WriteLine("     Examples:");
+                Console.WriteLine("     mountme -mount \"c:\\some folder\\file.iso\"");
+                Console.WriteLine("     mountme -unmount \"c:\\some folder\\file.iso\"");
+                Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\"");
+                Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\" \"-n -i -g\"");
+                Console.WriteLine();
+                Console.WriteLine("Press any key");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
             App.MainBob();
         }
 
