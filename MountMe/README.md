@@ -24,4 +24,8 @@ If you use %DRIVE% or %DRIVE:% (note the colon) in APPARGUMENTS it's replaced wi
           After mounted App run like "c:\some folder\file.exe" "-d G: -Fullscreen"
 ```
 
+Relative paths will work in LaunchBox mode (-lbox) **IF** LaunchBox.exe (or BigBox.exe) is running
+
+Relative paths assume your launchbox folder where LaunchBox is running from as it starting point
+
 Compiled EXE in the [bin/Release](https://github.com/go2tom42/C-Sharp/tree/master/MountMe/bin/Release) folder if needed

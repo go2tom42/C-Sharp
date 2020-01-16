@@ -3,13 +3,27 @@ using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace MountMe
 {
     internal class App
     {
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
         internal static void MainBob()
         {
+            const int SW_HIDE = 0;
+            const int SW_SHOW = 5;
+            var handle = GetConsoleWindow();
+            ShowWindow(handle, SW_HIDE); // To hide
+            bool boxExists = false;
+            string lboxpath = null;
             if (Environment.GetCommandLineArgs()[1].Contains("-mount"))
             {
                 //Console.WriteLine("Yes -mount");
@@ -45,10 +59,47 @@ namespace MountMe
             else if (Environment.GetCommandLineArgs()[1].Contains("-lbox"))
             {
                 //Launchbox section
+
+                //Get Launchbox Path
+
+                //Get command line args and fix if needed
                 string isoPath = Environment.GetCommandLineArgs()[2]; //get iso path
-                String appPath = Environment.GetCommandLineArgs()[3]; //get app path
+                string appPath = Environment.GetCommandLineArgs()[3]; //get app path
+                //Check if relative path 
+                if (!isoPath.Contains(":"))
+                {
+                    GetLaunchBoxPath();
+                    //Console.WriteLine(lboxpath);
+                    boxExists = !string.IsNullOrEmpty(lboxpath);
+                    ExitIfRelativePathAndNoLaunchBox();
+                    if (isoPath.StartsWith("\\"))
+                    {
+                        isoPath = isoPath.Substring(1);
+                    }
+                    isoPath = Path.Combine(lboxpath, isoPath);
+                    //Console.WriteLine(isoPath);
+                }
+
+                if (!appPath.Contains(":"))
+                {
+                    GetLaunchBoxPath();
+                    //Console.WriteLine(lboxpath);
+                    boxExists = !string.IsNullOrEmpty(lboxpath);
+                    ExitIfRelativePathAndNoLaunchBox();
+                    if (appPath.StartsWith("\\"))
+                    {
+                        appPath = appPath.Substring(1);
+                    }
+                    appPath = Path.Combine(lboxpath, appPath);
+                    //Console.WriteLine(appPath);
+                }
+
+
+                //Get folder for app and set as working folder
                 String workingFolder = new FileInfo(appPath).Directory.FullName; //Get directory of app
                 Directory.SetCurrentDirectory(workingFolder); //Set the current directory.
+                
+                
                 //MOUNT start
                 using (var ps = PowerShell.Create())
                 {
@@ -147,6 +198,7 @@ namespace MountMe
             }
             else
             {
+                ShowWindow(handle, SW_SHOW); // To show
                 Console.Clear();
                 Console.WriteLine();
                 Console.WriteLine("You asked for or needed help");
@@ -164,14 +216,68 @@ namespace MountMe
                 Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\"");
                 Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\" \"-d %DRIVE:% -Fullscreen\"");
                 Console.WriteLine("                 After mounted App run like \"c:\\some folder\\file.exe\" \"-d G: -Fullscreen\"");
-                Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\" \"-d %DRIVE% -Fullscreen\"");
-                Console.WriteLine("                 After mounted App run like \"c:\\some folder\\file.exe\" \"-d G -Fullscreen\"");
+                Console.WriteLine("     mountme -lbox \"c:\\some folder\\file.iso\" \"c:\\some folder\\file.exe\" \"%DRIVE:%\\PS3_GAME\\USRDIR\\EBOOT.BIN\"");
+                Console.WriteLine("                 After mounted App run like \"c:\\some folder\\file.exe\" \"G:\\PS3_GAME\\USRDIR\\EBOOT.BIN\"");
                 Console.WriteLine();
                 Console.WriteLine("Press any key");
                 Console.ReadKey();
 
             }
+            void GetLaunchBoxPath()
+            {
+                var procList = Process.GetProcessesByName("LaunchBox");
+                foreach (Process instance in procList)
+                {
+                    try
+                    {
+                        lboxpath = instance.MainModule.FileName;
+                        lboxpath = lboxpath.Replace("\\LaunchBox.exe","");
 
+                    }
+                    catch (Win32Exception w32ex)
+                    {
+                        Console.WriteLine(w32ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                bool launchboxExists = !string.IsNullOrEmpty(lboxpath);
+                if (!launchboxExists)
+                {
+                    procList = Process.GetProcessesByName("BigBox");
+                    foreach (Process instance in procList)
+                    {
+                        try
+                        {
+                            lboxpath = instance.MainModule.FileName;
+                            lboxpath = lboxpath.Replace("\\BigBox.exe", "");
+
+                        }
+                        catch (Win32Exception w32ex)
+                        {
+                            Console.WriteLine(w32ex.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
+                }
+
+            }
+            void ExitIfRelativePathAndNoLaunchBox()
+            {
+                if (!boxExists)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Niether LaunchBox nor BigBox is running, Bye");
+                    Console.WriteLine("Press any key");
+                    Console.ReadKey();
+                    Environment.Exit(0);
+                }
+            }
         }
     }
 }
