@@ -20,8 +20,8 @@ If you use %DRIVE% or %DRIVE:% (note the colon) in APPARGUMENTS it's replaced wi
  mountme -lbox "c:\some folder\file.iso" "c:\some folder\file.exe" "-d %DRIVE% -Fullscreen"
           After mounted App run like "c:\some folder\file.exe" "-d G -Fullscreen"
  
- mountme -lbox "c:\some folder\file.iso" "c:\some folder\file.exe" "-d %DRIVE:% -Fullscreen"
-          After mounted App run like "c:\some folder\file.exe" "-d G: -Fullscreen"
+ mountme -lbox "c:\some folder\file.iso" "c:\some folder\file.exe" "%DRIVE:%\PS3_GAME\USRDIR\EBOOT.BIN"
+          After mounted App run like "c:\some folder\file.exe" "G:\PS3_GAME\USRDIR\EBOOT.BIN"
 ```
 
 Relative paths will work in LaunchBox mode (-lbox) **IF** LaunchBox.exe (or BigBox.exe) is running
