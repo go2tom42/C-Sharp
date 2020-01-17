@@ -1,9 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Diagnostics;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace MountMe
@@ -98,8 +98,8 @@ namespace MountMe
                 //Get folder for app and set as working folder
                 String workingFolder = new FileInfo(appPath).Directory.FullName; //Get directory of app
                 Directory.SetCurrentDirectory(workingFolder); //Set the current directory.
-                
-                
+
+
                 //MOUNT start
                 using (var ps = PowerShell.Create())
                 {
@@ -176,9 +176,9 @@ namespace MountMe
                         string tempargs = Environment.GetCommandLineArgs()[4]; //it exists
                         process.StartInfo.Arguments = tempargs.Replace("%DRIVE:%", driveLetter + ":");
                     }
-                    
-                    
-                    else 
+
+
+                    else
                     {
                         process.StartInfo.Arguments = Environment.GetCommandLineArgs()[4]; //it exists
                     }
@@ -231,7 +231,7 @@ namespace MountMe
                     try
                     {
                         lboxpath = instance.MainModule.FileName;
-                        lboxpath = lboxpath.Replace("\\LaunchBox.exe","");
+                        lboxpath = lboxpath.Replace("\\LaunchBox.exe", "");
 
                     }
                     catch (Win32Exception w32ex)
